@@ -1,175 +1,271 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <style>
-    @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;400&display=swap");
-* {
-box-sizing: border-box;
-}
-body {
-background-color: #b8c6db;
-background-image: linear-gradient(315deg, #b8c6db 0%, #f5f7fa 100%);
-font-family: "Poppins", sans-serif;
-display: flex;
-align-items: center;
-justify-content: center;
-height: 100vh;
-overflow: hidden;
-margin: 0;
-}
-.quiz-container {
-background-color: #fff;
-border-radius: 10px;
-box-shadow: 0 0 10px 2px rgba(100, 100, 100, 0.1);
-width: 600px;
-max-width: 95vw;
-overflow: hidden;
-}
-.quiz-header {
-padding: 4rem;
-}
-h2 {
-padding: 1rem;
-text-align: center;
-margin: 0;
-}
-ul {
-list-style-type: none;
-padding: 0;
-}
-ul li {
-font-size: 1.2rem;
-margin: 1rem 0;
-}
-ul li label {
-cursor: pointer;
-}
-button {
-background-color: #8e44ad;
-color: #fff;
-border: none;
-display: block;
-width: 100%;
-cursor: pointer;
-font-size: 1.1rem;
-font-family: inherit;
-padding: 1.3rem;
-}
-button:hover {
-background-color: #732d91;
-}
-button:focus {
-outline: none;
-background-color: #5e3370;
-}
-    </style>
+  <meta charset="UTF-8" />
+  <title>Quiz App with Timer & Username</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap");
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to right, #667eea, #764ba2);
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      width: 600px;
+      max-width: 95vw;
+      padding: 30px;
+      text-align: center;
+    }
+    input[type="text"] {
+      padding: 10px;
+      font-size: 1rem;
+      width: 80%;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #5c6bc0;
+      color: #fff;
+      border: none;
+      padding: 15px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      border-radius: 8px;
+      width: 100%;
+      margin-top: 10px;
+    }
+    button:hover {
+      background-color: #3f51b5;
+    }
+    .quiz-header {
+      margin-bottom: 20px;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+      text-align: left;
+    }
+    li {
+      margin: 12px 0;
+      font-size: 1.1rem;
+    }
+    input[type="radio"] {
+      margin-right: 10px;
+    }
+    .feedback {
+      padding: 10px;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+    .correct { background-color: #d4edda; color: #155724; }
+    .wrong { background-color: #f8d7da; color: #721c24; }
+    .skipped { background-color: #fff3cd; color: #856404; }
+    .timer {
+      text-align: center;
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: #d50000;
+    }
+  </style>
 </head>
 <body>
-    <div class="quiz-container" id="quiz">
-        <div class="quiz-header">
-        <h2 id="question">Question is loading...</h2>
-        <ul>
-        <li>
-        <input type="radio" name="answer" id="a" class="answer" />
-        <label for="a" id="a_text">Answer...</label>
-        </li>
-        <li>
-        <input type="radio" name="answer" id="b" class="answer" />
-        <label for="b" id="b_text">Answer...</label>
-        </li>
-        <li>
-        <input type="radio" name="answer" id="c" class="answer" />
-        <label for="c" id="c_text">Answer...</label>
-        </li>
-        <li>
-        <input type="radio" name="answer" id="d" class="answer" />
-        <label for="d" id="d_text">Answer...</label>
-        </li>
-        </ul>
-        </div>
-        <button id="submit">Submit</button>
-        </div>
 
-        <script>
-            const quizData = [
-{
-question: "Which language runs in a web browser?",
-a: "Java",
-b: "C",
-c: "Python",
-d: "JavaScript",
-correct: "d",
-},
-{
-question: "What does CSS stand for?",
-a: "Central Style Sheets",
-b: "Cascading Style Sheets",
-c: "Cascading Simple Sheets",
-d: "Cars SUVs Sailboats",
-correct: "b",
-},
-{
-question: "What does HTML stand for?",
-a: "Hypertext Markup Language",
-b: "Hypertext Markdown Language",
-c: "Hyperloop Machine Language",
-d: "Helicopters Terminals Motorboats Lamborginis",
-correct: "a",
-},
-{
-question: "What year was JavaScript launched?",
-a: "1996",
-b: "1995",
-c: "1994",
-d: "none of the above",
-correct: "b",
-},
+<div class="container" id="startScreen">
+  <h2>👋 Welcome to the Quiz</h2>
+  <p>Please enter your name to begin:</p>
+  <input type="text" id="usernameInput" placeholder="Your Name" />
+  <button onclick="startQuiz()">Start Quiz</button>
+</div>
+
+<div class="container" id="quiz" style="display:none">
+  <div class="quiz-header">
+    <div class="timer" id="timer">Time Left: 15s</div>
+    <h3 id="welcomeText"></h3>
+    <h2 id="question">Loading question...</h2>
+    <ul>
+      <li><input type="radio" name="answer" id="a" class="answer"><label for="a" id="a_text">A</label></li>
+      <li><input type="radio" name="answer" id="b" class="answer"><label for="b" id="b_text">B</label></li>
+      <li><input type="radio" name="answer" id="c" class="answer"><label for="c" id="c_text">C</label></li>
+      <li><input type="radio" name="answer" id="d" class="answer"><label for="d" id="d_text">D</label></li>
+    </ul>
+  </div>
+  <button id="submit">Submit</button>
+</div>
+
+<script>
+const quizData = [
+  {
+    question: "Which language runs in a web browser?",
+    a: "Java",
+    b: "C",
+    c: "Python",
+    d: "JavaScript",
+    correct: "d"
+  },
+  {
+    question: "What does CSS stand for?",
+    a: "Central Style Sheets",
+    b: "Cascading Style Sheets",
+    c: "Computer Style Sheets",
+    d: "Creative Style Sheets",
+    correct: "b"
+  },
+  {
+    question: "What does HTML stand for?",
+    a: "Hypertext Markup Language",
+    b: "Hyper Tool Multi Language",
+    c: "Hyperlink Machine Language",
+    d: "Home Tool Markup Language",
+    correct: "a"
+  },
+   {
+    question: "What is the output of 2 + '2' in JavaScript?",
+    a: "4",
+    b: "22",
+    c: "NaN",
+    d: "Error",
+    correct: "b"
+  },
+  {
+    question: "Which HTML tag is used to define an unordered list?",
+    a: "<ol>",
+    b: "<ul>",
+    c: "<li>",
+    d: "<list>",
+    correct: "b"
+  },
+  {
+    question: "What does SQL stand for?",
+    a: "Structured Query Language",
+    b: "Strong Question Language",
+    c: "Stylish Question Language",
+    d: "Statement Question Language",
+    correct: "a"
+  }
 ];
+
+let currentQuiz = 0;
+let score = 0;
+let attempted = 0;
+let wrong = 0;
+let skipped = 0;
+let timer;
+let timeLeft = 15;
+const feedbackList = [];
+let userName = "";
+
 const quiz = document.getElementById("quiz");
-const answerElements = document.querySelectorAll(".answer");
-const questionElement = document.getElementById("question");
+const questionEl = document.getElementById("question");
 const a_text = document.getElementById("a_text");
 const b_text = document.getElementById("b_text");
 const c_text = document.getElementById("c_text");
 const d_text = document.getElementById("d_text");
-const submitButton = document.getElementById("submit");
-let currentQuiz = 0;
-let score = 0;
-const deselectAnswers = () => {
-answerElements.forEach((answer) => (answer.checked = false));
-};
-const getSelected = () => {
-let answer;
-answerElements.forEach((answerElement) => {
-if (answerElement.checked) answer = answerElement.id;
-});
-return answer;
-};
-const loadQuiz = () => {
-deselectAnswers();
-const currentQuizData = quizData[currentQuiz];
-questionElement.innerText = currentQuizData.question;
-a_text.innerText = currentQuizData.a;
-b_text.innerText = currentQuizData.b;
-c_text.innerText = currentQuizData.c;
-d_text.innerText = currentQuizData.d;
-};
-loadQuiz();
-submitButton.addEventListener("click", () => {
-const answer = getSelected();
-if (answer) {
-if (answer === quizData[currentQuiz].correct) score++;
-currentQuiz++;
-if (currentQuiz < quizData.length) loadQuiz();
-else {
-quiz.innerHTML = `
-<h2>You answered ${score}/${quizData.length} questions correctly</h2>
-<button onclick="history.go(0)">Play Again</button>
-` // location.reload() won't work in CodePen for security reasons;
+const answerEls = document.querySelectorAll(".answer");
+const submitBtn = document.getElementById("submit");
+const timerDisplay = document.getElementById("timer");
+const welcomeText = document.getElementById("welcomeText");
+
+function startQuiz() {
+  const input = document.getElementById("usernameInput").value.trim();
+  if (!input) {
+    alert("Please enter your name.");
+    return;
+  }
+  userName = input;
+  document.getElementById("startScreen").style.display = "none";
+  quiz.style.display = "block";
+  welcomeText.innerText = `👋 Hello, ${userName}!`;
+  loadQuiz();
 }
+
+function startTimer() {
+  clearInterval(timer);
+  timeLeft = 15;
+  timerDisplay.innerText = `Time Left: ${timeLeft}s`;
+  timer = setInterval(() => {
+    timeLeft--;
+    timerDisplay.innerText = `Time Left: ${timeLeft}s`;
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      handleSubmit();
+    }
+  }, 1000);
 }
-});
-        </script>
+
+function loadQuiz() {
+  deselectAnswers();
+  const current = quizData[currentQuiz];
+  questionEl.innerText = current.question;
+  a_text.innerText = current.a;
+  b_text.innerText = current.b;
+  c_text.innerText = current.c;
+  d_text.innerText = current.d;
+  startTimer();
+}
+
+function deselectAnswers() {
+  answerEls.forEach(el => el.checked = false);
+}
+
+function getSelected() {
+  let answer;
+  answerEls.forEach(el => {
+    if (el.checked) answer = el.id;
+  });
+  return answer;
+}
+
+submitBtn.addEventListener("click", handleSubmit);
+
+function handleSubmit() {
+  clearInterval(timer);
+  const answer = getSelected();
+  const correct = quizData[currentQuiz].correct;
+  if (answer) {
+    attempted++;
+    if (answer === correct) {
+      score++;
+      feedbackList.push(`<div class='feedback correct'>Q${currentQuiz + 1}: Correct ✅</div>`);
+    } else {
+      wrong++;
+      feedbackList.push(`<div class='feedback wrong'>Q${currentQuiz + 1}: Wrong ❌ (Correct: ${correct.toUpperCase()})</div>`);
+    }
+  } else {
+    skipped++;
+    feedbackList.push(`<div class='feedback skipped'>Q${currentQuiz + 1}: Skipped ⏱ (Correct: ${correct.toUpperCase()})</div>`);
+  }
+  currentQuiz++;
+  if (currentQuiz < quizData.length) {
+    loadQuiz();
+  } else {
+    showResults();
+  }
+}
+
+function showResults() {
+  quiz.innerHTML = `
+    <h2>🎉 Quiz Completed, ${userName}!</h2>
+    <p><strong>Total Questions:</strong> ${quizData.length}</p>
+    <p><strong>Attempted:</strong> ${attempted}</p>
+    <p><strong>Correct:</strong> ${score}</p>
+    <p><strong>Wrong:</strong> ${wrong}</p>
+    <p><strong>Skipped:</strong> ${skipped}</p>
+    <hr>
+    ${feedbackList.join("")}
+    <button onclick="location.reload()">🔁 Try Again</button>
+  `;
+}
+</script>
 </body>
 </html>
